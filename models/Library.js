@@ -5,7 +5,6 @@ const librarySchema = new mongoose.Schema({
   story: { type: String, required: true },
   description: { type: String, required: true },
   contact: { type: String, required: true },
-  // createdAt: { type: Date, required: false, default: Date.now },
   // Add other fields as needed, set required: true if needed
 },
   { timestamps: true }

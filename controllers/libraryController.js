@@ -1,4 +1,5 @@
 const Library = require('../models/Library');
+const Credit = require('../models/Credit');
 const { validationResult } = require('express-validator');
 
 // Get all active libraries
@@ -17,9 +18,30 @@ exports.createLibrary = async (req, res) => {
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
+
+  // Create the Library
   try {
     const pkg = new Library(req.body);
     await pkg.save();
+
+    // Update Credits for the new Library
+    if (req.body.sale_id) {
+      const credit = await Credit.findOneAndUpdate(
+        {
+          sale_id: req.body.sale_id,
+          used: false
+        },
+        {
+          sale_id: req.body.sale_id,
+          quantity: 1,
+          used: true,
+          library_id: pkg._id
+        }
+      );
+    } else {
+      res.status(400).json({ error: 'Id de la venta no encontrado', details: 'request: ' + req.body});
+    }
+
     res.status(201).json({ message: 'Library created successfully', library: pkg });
   } catch (err) {
     res.status(400).json({ error: 'Failed to create library', details: err.message });

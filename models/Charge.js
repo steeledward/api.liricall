@@ -7,8 +7,9 @@ const chargeSchema = new mongoose.Schema(
             required: true,
             min: 0
         },
-        autorization: {
+        authorization: {
             type: String,
+            required: true
         },
         conciliated: {
             type: Boolean,
@@ -17,7 +18,7 @@ const chargeSchema = new mongoose.Schema(
         currency: {
             type: String,
             required: true,
-            default: 'USD',
+            default: 'MXN',
             uppercase: true,
             trim: true,
             maxlength: 3
@@ -78,6 +79,11 @@ const chargeSchema = new mongoose.Schema(
         customer_id: {
             type: String,
             required: true
+        },
+        quantity: {
+            type: Number,
+            required: true,
+            default: 0,
         },
     },
     { timestamps: true }
