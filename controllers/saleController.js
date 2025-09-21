@@ -123,7 +123,6 @@ exports.createSale = async (req, res) => {
 
         newCredits = await Credit.insertMany(credits, {
           ordered: false, // Continue inserting even if some documents fail
-          rawResult: true // Return the full result object
         });
 
       } catch (err) {
