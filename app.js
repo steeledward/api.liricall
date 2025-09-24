@@ -6,6 +6,7 @@ const packageRoutes = require('./routes/packageRoutes');
 const saleRoutes = require('./routes/saleRoutes');
 const libraryRoutes = require('./routes/libraryRoutes');
 const creditRoutes = require('./routes/creditRoutes');
+const refererRoutes = require('./routes/refererRoutes');
 
 const app = express();
 const port = process.env.PORT || 3003;
@@ -21,6 +22,7 @@ app.use('/api/packages', packageRoutes); // Add this line to use the package rou
 app.use('/api/sales', saleRoutes);
 app.use('/api/libraries', libraryRoutes);
 app.use('/api/credits', creditRoutes);
+app.use('/api/referers', refererRoutes);
 
 app.listen(port, () => {
   console.log(`API server listening at http://localhost:${port}`);
