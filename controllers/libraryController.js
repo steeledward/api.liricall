@@ -5,10 +5,56 @@ const { validationResult } = require('express-validator');
 // Get all active libraries
 exports.getActiveLibraries = async (req, res) => {
   try {
-    const libraries = await Library.find({ active: true });
+    const libraries = await Library.find();
     res.json(libraries);
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch libraries', details: err.message });
+  }
+};
+
+// Get paged libraries
+exports.getPagedLibraries = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const search = req.query.search || '';
+    const sortBy = req.query.sortBy || 'Date';
+    const sortOrder = req.query.sortOrder === 'desc' ? -1 : 1;
+
+    const skip = (page - 1) * limit;
+
+    // Build search query
+    let query = {};
+    if (search) {
+      query = {
+        $or: [
+          { Title: { $regex: search, $options: 'i' } },
+          { Story: { $regex: search, $options: 'i' } },
+          { Lyric: { $regex: search, $options: 'i' } }
+        ]
+      };
+    }
+
+    // Get total count for pagination
+    const total = await Library.countDocuments(query);
+
+    // Get libraries with pagination and sorting
+    const libraries = await Library.find(query)
+      .sort({ [sortBy]: sortOrder })
+      .skip(skip)
+      .limit(limit);
+
+    res.json({
+      libraries,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+      hasNext: page < Math.ceil(total / limit),
+      hasPrev: page > 1
+    });
+  } catch (error) {
+    console.error('Error fetching items:', error);
+    res.status(500).json({ message: 'Server Error' });
   }
 };
 
@@ -39,7 +85,7 @@ exports.createLibrary = async (req, res) => {
         }
       );
     } else {
-      res.status(400).json({ error: 'Id de la venta no encontrado', details: 'request: ' + req.body});
+      res.status(400).json({ error: 'Id de la venta no encontrado', details: 'request: ' + req.body });
     }
 
     res.status(201).json({ message: 'Library created successfully', library: pkg });

@@ -30,6 +30,9 @@ const libraryValidation = [
 // Get all active librarys
 router.get('/', libraryController.getActiveLibraries);
 
+// Get paged librarys
+router.get('/paged', libraryController.getPagedLibraries);
+
 // Create a new library
 router.post('/', libraryValidation, libraryController.createLibrary);
 
