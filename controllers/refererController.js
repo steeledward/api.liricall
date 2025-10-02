@@ -11,6 +11,50 @@ exports.getActiveReferers = async (req, res) => {
   }
 };
 
+// Get paged referers
+exports.getPagedReferers = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const search = req.query.search || '';
+    const sortBy = req.query.sortBy || 'createdAt';
+    const sortOrder = req.query.sortOrder === 'desc' ? -1 : 1;
+
+    const skip = (page - 1) * limit;
+
+    // Build search query
+    let query = {};
+    if (search) {
+      query = {
+        $or: [
+          { content: { $regex: search, $options: 'i' } }
+        ]
+      };
+    }
+
+    // Get total count for pagination
+    const total = await Referer.countDocuments(query);
+
+    // Get referers with pagination and sorting
+    const referers = await Referer.find(query)
+      .sort({ [sortBy]: sortOrder })
+      .skip(skip)
+      .limit(limit);
+
+    res.json({
+      referers,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+      hasNext: page < Math.ceil(total / limit),
+      hasPrev: page > 1
+    });
+  } catch (error) {
+    console.error('Error fetching items:', error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
 // Create a new referer
 exports.createReferer = async (req, res) => {
   const errors = validationResult(req);

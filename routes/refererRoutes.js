@@ -27,6 +27,9 @@ const refererValidation = [
 // Get all active refererss
 router.get('/', refererController.getActiveReferers);
 
+// Get paged referers
+router.get('/paged', refererController.getPagedReferers);
+
 // Create a new referers
 router.post('/', refererValidation, refererController.createReferer);
 
