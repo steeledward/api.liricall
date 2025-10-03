@@ -16,8 +16,6 @@ function validateObjectId(req, res, next) {
 const libraryValidation = [
   body('title').isString().trim().notEmpty().withMessage('Title is required'),
   body('story').isString().trim().notEmpty().withMessage('Story is required'),
-  body('description').isString().trim().notEmpty().withMessage('Description is required'),
-  body('contact').isString().trim().notEmpty().withMessage('Contact is required'),
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
