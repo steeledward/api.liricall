@@ -123,3 +123,15 @@ exports.deleteLibrary = async (req, res) => {
     res.status(400).json({ error: 'Failed to delete library', details: err.message });
   }
 };
+
+// Controller function for uploading a single image
+exports.uploadImage = (req, res) => {
+    if (!req.file) {
+        return res.status(400).send('No image file uploaded.');
+    }
+
+    // The file path will be something like '/uploads/image-1678901234567.jpg'
+    // This path is relative to the static files served by Express.
+    const imageUrl = `/uploads/${req.file.filename}`;
+    res.json({ message: 'Image uploaded successfully!', path: imageUrl });
+};

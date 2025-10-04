@@ -4,6 +4,22 @@ const { body, validationResult, param } = require('express-validator');
 const mongoose = require('mongoose');
 const libraryController = require('../controllers/libraryController');
 
+const multer = require('multer');
+const path = require('path');
+
+// Set up Multer for file storage
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/'); // Images will be stored in the 'uploads' directory
+    },
+    filename: function (req, file, cb) {
+        // Generate a unique filename by appending a timestamp to the original filename
+        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({ storage: storage });
+
 // Middleware to validate ObjectId
 function validateObjectId(req, res, next) {
   if (req.params.id && !mongoose.Types.ObjectId.isValid(req.params.id)) {
@@ -39,5 +55,9 @@ router.put('/:id', validateObjectId, libraryValidation, libraryController.update
 
 // Delete a library by ID
 router.delete('/:id', validateObjectId, libraryController.deleteLibrary);
+
+// Define the upload route
+// 'image' is the field name expected in the form-data upload
+router.post('/portrait', upload.single('image'), libraryController.uploadImage);
 
 module.exports = router;
