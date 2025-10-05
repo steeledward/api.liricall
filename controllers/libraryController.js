@@ -2,11 +2,13 @@ const Library = require('../models/Library');
 const Credit = require('../models/Credit');
 const { validationResult } = require('express-validator');
 
-// Get all active libraries
+// Get all active libraries if the fiter active exist
 exports.getActiveLibraries = async (req, res) => {
   try {
-    const libraries = await Library.find();
-    res.json(libraries);
+    const libraries = await Library.find({approved: true});
+    const total = await Library.countDocuments({});
+
+    res.json({libraries, total});
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch libraries', details: err.message });
   }

@@ -4,6 +4,7 @@ const librarySchema = new mongoose.Schema({
   title: { type: String, required: true },
   story: { type: String, required: true },
   lyric: { type: String, required: false },
+  stars: { type: Number, required: false },
   // Add other fields as needed, set required: true if needed
 },
   { timestamps: true }
