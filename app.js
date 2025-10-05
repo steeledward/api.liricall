@@ -10,6 +10,7 @@ const libraryRoutes = require('./routes/libraryRoutes');
 const creditRoutes = require('./routes/creditRoutes');
 const refererRoutes = require('./routes/refererRoutes');   
 const reviewRoutes = require('./routes/reviewRoutes');
+const genreRoutes = require('./routes/genreRoutes');
 
 const path = require('path');
 const fs = require('fs');
@@ -40,6 +41,7 @@ app.use('/api/libraries', libraryRoutes);
 app.use('/api/credits', creditRoutes);
 app.use('/api/referers', refererRoutes);
 app.use('/api/reviews', reviewRoutes);
+app.use('/api/genres', genreRoutes);
 
 app.use('/uploads', express.static('uploads'));
 
